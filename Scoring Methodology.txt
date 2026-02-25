@@ -1,0 +1,32 @@
+The scoring methodology is primarily implemented in the _compute_scores method within the DataQualityScanner class. 
+It's designed to provide a comprehensive assessment of data quality and regulatory compliance.
+
+Here's a breakdown:
+
+Bias Score Calculation: 
+First, a bias score is calculated. Each detected bias flag (from selection, measurement, historical, and algorithmic bias checks) 
+deducts 12 points from a perfect score of 1.0 (representing 100%). This score is capped at 0.0, meaning it can't go negative.
+
+Weighted Combination of Component Scores: 
+The individual scores from each quality dimension (completeness, validity, uniqueness, consistency), 
+along with the calculated bias score, are then combined. 
+This combination uses a predefined set of WEIGHTS (e.g., completeness: 0.30, validity: 0.25, uniqueness: 0.20, consistency: 0.10, bias: 0.15).
+The weighted score is the sum of each component's score multiplied by its corresponding weight.
+
+Overall Audit Score and Grade: The weighted score is converted to a percentage (0-100) to give the overall audit score. 
+A letter grade is then assigned based on this overall score:
+
+A: ≥ 85
+B: ≥ 70
+C: ≥ 55
+D: < 55
+
+Regulatory Compliance Flags: The method also checks for fda_flags based on specific thresholds for various standards:
+
+A flag is raised if the overall missing rate exceeds 5% (FDA 21 CFR Part 11).
+A flag is raised if the duplicate rate exceeds 1% (FDA Data Integrity).
+A flag is raised if any impossible values are detected (NDHM Quality Standard).
+If 3 or more bias flags are found, a flag indicates that a fairness audit is required (FDA AI/ML SaMD).
+
+Finally, a dataset is considered compliant if its overall score is 70 or higher and no regulatory fda_flags are identified.
+
