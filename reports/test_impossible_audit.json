@@ -1,0 +1,131 @@
+{
+  "file": "test_data/test_impossible.csv",
+  "rows": 500,
+  "columns": 9,
+  "processing_time": 1.44,
+  "scores": {
+    "overall": 81.0,
+    "grade": "B",
+    "color": "#ffa726",
+    "components": {
+      "completeness": 67.4,
+      "validity": 89.3,
+      "uniqueness": 100.0,
+      "consistency": 70.0,
+      "bias_free": 76.0
+    },
+    "fda_flags": [
+      "21 CFR Part 11: Missing rate exceeds 5% in critical fields",
+      "NDHM Quality Standard: Impossible clinical values detected"
+    ],
+    "compliant": false
+  },
+  "quality": {
+    "completeness": {
+      "score": 0.674,
+      "missing_rate": 0.1087,
+      "per_column": {
+        "PatientID": 0.0,
+        "Age": 0.0,
+        "DeliveryType": 0.0,
+        "LaborDuration": 0.0,
+        "Location": 0.0,
+        "Complications": 0.0,
+        "Readmitted": 0.0,
+        "LengthofStaydays": 0.0,
+        "LOS": 0.978
+      },
+      "issues": [
+        {
+          "type": "MISSING_HIGH",
+          "column": "LOS",
+          "severity": "HIGH",
+          "value": "97.8%",
+          "message": "'LOS' has 97.8% missing values - exceeds 20% threshold",
+          "recommendation": "Impute 'LOS' using median/mode, or exclude column if >50% missing"
+        }
+      ]
+    },
+    "validity": {
+      "score": 0.8933,
+      "impossible_values": 32,
+      "issues": [
+        {
+          "type": "IMPOSSIBLE_VALUE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "21 values outside [18, 45] (e.g. [16, 50, 50])",
+          "message": "'Age' has 21 clinically impossible values (valid: 18-45)",
+          "recommendation": "Remove or correct impossible values in 'Age'; add data-entry constraints"
+        },
+        {
+          "type": "IMPOSSIBLE_VALUE",
+          "column": "LOS",
+          "severity": "HIGH",
+          "value": "11 values outside [2, 30] (e.g. [1.0, 1.0, 1.0])",
+          "message": "'LOS' has 11 clinically impossible values (valid: 2-30)",
+          "recommendation": "Remove or correct impossible values in 'LOS'; add data-entry constraints"
+        }
+      ]
+    },
+    "uniqueness": {
+      "score": 1.0,
+      "duplicate_rows": 0,
+      "duplicate_rate": 0.0,
+      "issues": []
+    },
+    "consistency": {
+      "score": 0.7,
+      "issues": [
+        {
+          "type": "LOS_TOO_LOW",
+          "column": "LOS",
+          "severity": "HIGH",
+          "value": "11",
+          "message": "11 records have LOS < 2 days (minimum for maternity inpatient)",
+          "recommendation": "Verify these are not outpatient records; correct or flag for review"
+        },
+        {
+          "type": "AGE_OUT_OF_RANGE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "13 over 45, 8 under 10",
+          "message": "Maternal age outside reproductive range: 13 >45, 8 <18",
+          "recommendation": "Correct erroneous age values; verify data entry at source system"
+        }
+      ]
+    }
+  },
+  "bias_flags": [
+    {
+      "type": "HISTORICAL_BIAS",
+      "attribute": "Location",
+      "severity": "MEDIUM",
+      "message": "Disparate 'Complications' rates by location: {'Rural': np.float64(0.255), 'Urban': np.float64(0.2)}",
+      "recommendation": "Investigate access disparities; consider location as a social determinant",
+      "metric": "Complications",
+      "group_rates": {
+        "Rural": 0.255,
+        "Urban": 0.2
+      },
+      "disparate_impact_ratio": 0.784
+    },
+    {
+      "type": "ALGORITHMIC_BIAS",
+      "attribute": "DeliveryType",
+      "severity": "MEDIUM",
+      "message": "'LengthofStaydays' is a potential proxy for 'DeliveryType' (Spearman \u03c1 = 0.77)",
+      "recommendation": "Decorrelate 'LengthofStaydays' from 'DeliveryType' before model training; apply fairness constraints or adversarial debiasing",
+      "proxy_variable": "LengthofStaydays",
+      "correlation": 0.769
+    }
+  ],
+  "summary": {
+    "quality_issues": 5,
+    "bias_flags": 2,
+    "missing_rate": 0.1087,
+    "duplicate_rows": 0,
+    "impossible_vals": 32
+  },
+  "visual_report": "reports/test_impossible_report.png"
+}

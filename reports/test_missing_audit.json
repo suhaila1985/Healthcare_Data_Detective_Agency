@@ -1,0 +1,100 @@
+{
+  "file": "test_data/test_missing.csv",
+  "rows": 500,
+  "columns": 8,
+  "processing_time": 1.54,
+  "scores": {
+    "overall": 93.8,
+    "grade": "A",
+    "color": "#66bb6a",
+    "components": {
+      "completeness": 94.6,
+      "validity": 95.0,
+      "uniqueness": 100.0,
+      "consistency": 85.0,
+      "bias_free": 88.0
+    },
+    "fda_flags": [
+      "NDHM Quality Standard: Impossible clinical values detected"
+    ],
+    "compliant": false
+  },
+  "quality": {
+    "completeness": {
+      "score": 0.946,
+      "missing_rate": 0.018,
+      "per_column": {
+        "PatientID": 0.0,
+        "Age": 0.102,
+        "DeliveryType": 0.0,
+        "LaborDuration": 0.0,
+        "Location": 0.0,
+        "Complications": 0.042,
+        "Readmitted": 0.0,
+        "LengthofStaydays": 0.0
+      },
+      "issues": [
+        {
+          "type": "MISSING_MODERATE",
+          "column": "Age",
+          "severity": "MEDIUM",
+          "value": "10.2%",
+          "message": "'Age' has 10.2% missing values - exceeds 5% FDA threshold",
+          "recommendation": "Investigate why 'Age' is missing; apply multiple imputation"
+        }
+      ]
+    },
+    "validity": {
+      "score": 0.95,
+      "impossible_values": 10,
+      "issues": [
+        {
+          "type": "IMPOSSIBLE_VALUE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "10 values outside [18, 45] (e.g. [16.0, 14.0, 47.0])",
+          "message": "'Age' has 10 clinically impossible values (valid: 18-45)",
+          "recommendation": "Remove or correct impossible values in 'Age'; add data-entry constraints"
+        }
+      ]
+    },
+    "uniqueness": {
+      "score": 1.0,
+      "duplicate_rows": 0,
+      "duplicate_rate": 0.0,
+      "issues": []
+    },
+    "consistency": {
+      "score": 0.85,
+      "issues": [
+        {
+          "type": "AGE_OUT_OF_RANGE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "2 over 45, 8 under 10",
+          "message": "Maternal age outside reproductive range: 2 >45, 8 <18",
+          "recommendation": "Correct erroneous age values; verify data entry at source system"
+        }
+      ]
+    }
+  },
+  "bias_flags": [
+    {
+      "type": "ALGORITHMIC_BIAS",
+      "attribute": "DeliveryType",
+      "severity": "MEDIUM",
+      "message": "'LengthofStaydays' is a potential proxy for 'DeliveryType' (Spearman \u03c1 = 0.77)",
+      "recommendation": "Decorrelate 'LengthofStaydays' from 'DeliveryType' before model training; apply fairness constraints or adversarial debiasing",
+      "proxy_variable": "LengthofStaydays",
+      "correlation": 0.769
+    }
+  ],
+  "summary": {
+    "quality_issues": 3,
+    "bias_flags": 1,
+    "missing_rate": 0.018,
+    "duplicate_rows": 0,
+    "impossible_vals": 10
+  },
+  "visual_report": "reports/test_missing_report.png"
+}

@@ -1,0 +1,104 @@
+{
+  "file": "test_data/test_clean.csv",
+  "rows": 500,
+  "columns": 8,
+  "processing_time": 1.42,
+  "scores": {
+    "overall": 93.6,
+    "grade": "A",
+    "color": "#66bb6a",
+    "components": {
+      "completeness": 100.0,
+      "validity": 95.0,
+      "uniqueness": 100.0,
+      "consistency": 85.0,
+      "bias_free": 76.0
+    },
+    "fda_flags": [
+      "NDHM Quality Standard: Impossible clinical values detected"
+    ],
+    "compliant": false
+  },
+  "quality": {
+    "completeness": {
+      "score": 1.0,
+      "missing_rate": 0.0,
+      "per_column": {
+        "PatientID": 0.0,
+        "Age": 0.0,
+        "DeliveryType": 0.0,
+        "LaborDuration": 0.0,
+        "Location": 0.0,
+        "Complications": 0.0,
+        "Readmitted": 0.0,
+        "LengthofStaydays": 0.0
+      },
+      "issues": []
+    },
+    "validity": {
+      "score": 0.95,
+      "impossible_values": 10,
+      "issues": [
+        {
+          "type": "IMPOSSIBLE_VALUE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "10 values outside [18, 45] (e.g. [16, 14, 47])",
+          "message": "'Age' has 10 clinically impossible values (valid: 18-45)",
+          "recommendation": "Remove or correct impossible values in 'Age'; add data-entry constraints"
+        }
+      ]
+    },
+    "uniqueness": {
+      "score": 1.0,
+      "duplicate_rows": 0,
+      "duplicate_rate": 0.0,
+      "issues": []
+    },
+    "consistency": {
+      "score": 0.85,
+      "issues": [
+        {
+          "type": "AGE_OUT_OF_RANGE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "2 over 45, 8 under 10",
+          "message": "Maternal age outside reproductive range: 2 >45, 8 <18",
+          "recommendation": "Correct erroneous age values; verify data entry at source system"
+        }
+      ]
+    }
+  },
+  "bias_flags": [
+    {
+      "type": "HISTORICAL_BIAS",
+      "attribute": "Location",
+      "severity": "MEDIUM",
+      "message": "Disparate 'Complications' rates by location: {'Rural': np.float64(0.255), 'Urban': np.float64(0.2)}",
+      "recommendation": "Investigate access disparities; consider location as a social determinant",
+      "metric": "Complications",
+      "group_rates": {
+        "Rural": 0.255,
+        "Urban": 0.2
+      },
+      "disparate_impact_ratio": 0.784
+    },
+    {
+      "type": "ALGORITHMIC_BIAS",
+      "attribute": "DeliveryType",
+      "severity": "MEDIUM",
+      "message": "'LengthofStaydays' is a potential proxy for 'DeliveryType' (Spearman \u03c1 = 0.77)",
+      "recommendation": "Decorrelate 'LengthofStaydays' from 'DeliveryType' before model training; apply fairness constraints or adversarial debiasing",
+      "proxy_variable": "LengthofStaydays",
+      "correlation": 0.769
+    }
+  ],
+  "summary": {
+    "quality_issues": 2,
+    "bias_flags": 2,
+    "missing_rate": 0.0,
+    "duplicate_rows": 0,
+    "impossible_vals": 10
+  },
+  "visual_report": "reports/test_clean_report.png"
+}

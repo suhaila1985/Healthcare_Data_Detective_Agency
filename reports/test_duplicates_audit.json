@@ -1,0 +1,122 @@
+{
+  "file": "test_data/test_duplicates.csv",
+  "rows": 550,
+  "columns": 8,
+  "processing_time": 1.46,
+  "scores": {
+    "overall": 84.4,
+    "grade": "B",
+    "color": "#ffa726",
+    "components": {
+      "completeness": 100.0,
+      "validity": 94.5,
+      "uniqueness": 54.5,
+      "consistency": 85.0,
+      "bias_free": 76.0
+    },
+    "fda_flags": [
+      "FDA Data Integrity: Duplicate records exceed 1% threshold",
+      "NDHM Quality Standard: Impossible clinical values detected"
+    ],
+    "compliant": false
+  },
+  "quality": {
+    "completeness": {
+      "score": 1.0,
+      "missing_rate": 0.0,
+      "per_column": {
+        "PatientID": 0.0,
+        "Age": 0.0,
+        "DeliveryType": 0.0,
+        "LaborDuration": 0.0,
+        "Location": 0.0,
+        "Complications": 0.0,
+        "Readmitted": 0.0,
+        "LengthofStaydays": 0.0
+      },
+      "issues": []
+    },
+    "validity": {
+      "score": 0.9455,
+      "impossible_values": 12,
+      "issues": [
+        {
+          "type": "IMPOSSIBLE_VALUE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "12 values outside [18, 45] (e.g. [16, 14, 47])",
+          "message": "'Age' has 12 clinically impossible values (valid: 18-45)",
+          "recommendation": "Remove or correct impossible values in 'Age'; add data-entry constraints"
+        }
+      ]
+    },
+    "uniqueness": {
+      "score": 0.5455,
+      "duplicate_rows": 50,
+      "duplicate_rate": 0.0909,
+      "issues": [
+        {
+          "type": "DUPLICATE_ROWS",
+          "column": "ALL",
+          "severity": "HIGH",
+          "value": "50 rows (9.1%)",
+          "message": "50 exact duplicate rows (9.1%) - FDA threshold is <1%",
+          "recommendation": "Remove duplicate rows; check ETL pipeline for double-ingestion"
+        },
+        {
+          "type": "DUPLICATE_ID",
+          "column": "PatientID",
+          "severity": "HIGH",
+          "value": "50",
+          "message": "'PatientID' has 50 duplicate identifiers (should be unique)",
+          "recommendation": "Resolve duplicate IDs in 'PatientID'; separate re-admissions properly"
+        }
+      ]
+    },
+    "consistency": {
+      "score": 0.85,
+      "issues": [
+        {
+          "type": "AGE_OUT_OF_RANGE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "2 over 45, 10 under 10",
+          "message": "Maternal age outside reproductive range: 2 >45, 10 <18",
+          "recommendation": "Correct erroneous age values; verify data entry at source system"
+        }
+      ]
+    }
+  },
+  "bias_flags": [
+    {
+      "type": "HISTORICAL_BIAS",
+      "attribute": "Location",
+      "severity": "MEDIUM",
+      "message": "Disparate 'Complications' rates by location: {'Rural': np.float64(0.2655), 'Urban': np.float64(0.2037)}",
+      "recommendation": "Investigate access disparities; consider location as a social determinant",
+      "metric": "Complications",
+      "group_rates": {
+        "Rural": 0.2655,
+        "Urban": 0.2037
+      },
+      "disparate_impact_ratio": 0.767
+    },
+    {
+      "type": "ALGORITHMIC_BIAS",
+      "attribute": "DeliveryType",
+      "severity": "MEDIUM",
+      "message": "'LengthofStaydays' is a potential proxy for 'DeliveryType' (Spearman \u03c1 = 0.77)",
+      "recommendation": "Decorrelate 'LengthofStaydays' from 'DeliveryType' before model training; apply fairness constraints or adversarial debiasing",
+      "proxy_variable": "LengthofStaydays",
+      "correlation": 0.775
+    }
+  ],
+  "summary": {
+    "quality_issues": 4,
+    "bias_flags": 2,
+    "missing_rate": 0.0,
+    "duplicate_rows": 50,
+    "impossible_vals": 12
+  },
+  "visual_report": "reports/test_duplicates_report.png"
+}

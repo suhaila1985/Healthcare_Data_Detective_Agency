@@ -1,0 +1,98 @@
+{
+  "file": "test_data/test_selection_bias.csv",
+  "rows": 300,
+  "columns": 8,
+  "processing_time": 1.53,
+  "scores": {
+    "overall": 93.2,
+    "grade": "A",
+    "color": "#66bb6a",
+    "components": {
+      "completeness": 100.0,
+      "validity": 93.3,
+      "uniqueness": 100.0,
+      "consistency": 85.0,
+      "bias_free": 76.0
+    },
+    "fda_flags": [
+      "NDHM Quality Standard: Impossible clinical values detected"
+    ],
+    "compliant": false
+  },
+  "quality": {
+    "completeness": {
+      "score": 1.0,
+      "missing_rate": 0.0,
+      "per_column": {
+        "PatientID": 0.0,
+        "Age": 0.0,
+        "DeliveryType": 0.0,
+        "LaborDuration": 0.0,
+        "Location": 0.0,
+        "Complications": 0.0,
+        "Readmitted": 0.0,
+        "LengthofStaydays": 0.0
+      },
+      "issues": []
+    },
+    "validity": {
+      "score": 0.9333,
+      "impossible_values": 8,
+      "issues": [
+        {
+          "type": "IMPOSSIBLE_VALUE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "8 values outside [18, 45] (e.g. [16, 14, 16])",
+          "message": "'Age' has 8 clinically impossible values (valid: 18-45)",
+          "recommendation": "Remove or correct impossible values in 'Age'; add data-entry constraints"
+        }
+      ]
+    },
+    "uniqueness": {
+      "score": 1.0,
+      "duplicate_rows": 0,
+      "duplicate_rate": 0.0,
+      "issues": []
+    },
+    "consistency": {
+      "score": 0.85,
+      "issues": [
+        {
+          "type": "AGE_OUT_OF_RANGE",
+          "column": "Age",
+          "severity": "HIGH",
+          "value": "1 over 45, 7 under 10",
+          "message": "Maternal age outside reproductive range: 1 >45, 7 <18",
+          "recommendation": "Correct erroneous age values; verify data entry at source system"
+        }
+      ]
+    }
+  },
+  "bias_flags": [
+    {
+      "type": "SELECTION_BIAS",
+      "attribute": "Location",
+      "severity": "HIGH",
+      "message": "Rural patients are completely absent from this dataset",
+      "recommendation": "Add rural patient data; findings will not generalise to rural settings"
+    },
+    {
+      "type": "ALGORITHMIC_BIAS",
+      "attribute": "DeliveryType",
+      "severity": "MEDIUM",
+      "message": "'LengthofStaydays' is a potential proxy for 'DeliveryType' (Spearman \u03c1 = -0.74)",
+      "recommendation": "Decorrelate 'LengthofStaydays' from 'DeliveryType' before model training; apply fairness constraints or adversarial debiasing",
+      "proxy_variable": "LengthofStaydays",
+      "correlation": -0.738
+    }
+  ],
+  "summary": {
+    "quality_issues": 2,
+    "bias_flags": 2,
+    "missing_rate": 0.0,
+    "duplicate_rows": 0,
+    "impossible_vals": 8
+  },
+  "visual_report": "reports/test_selection_bias_report.png"
+}
